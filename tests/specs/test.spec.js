@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 
 // expect.soft - if one test fails, it does not stop, it keeps checking until it checks everything
-test('Get all products', async({request}) => {
+test.skip('Get all products', async({request}) => {
     // send a get request
     // check response status
     // validate the response body contains product data
@@ -25,3 +25,37 @@ test('Get all products', async({request}) => {
     }
 })
 
+test('Get product by valid ID', async({request}) => {
+
+    const apiResponse = await request.get('https://api.practicesoftwaretesting.com/products')
+
+    expect((apiResponse).status()).toBe(200)
+
+    const productData = await apiResponse.json()
+
+    expect(productData).toBeTruthy()
+    expect(Array.isArray(productData.data)).toBeTruthy()
+
+    const productID = productData.data[0].id
+    // console.log(productID)
+    const specifiedItemAPI = await request.get(`https://api.practicesoftwaretesting.com/products/${productID}`)
+    expect((specifiedItemAPI).status()).toBe(200)
+    
+    const testProduct = await specifiedItemAPI.json()
+    expect(testProduct).toBeTruthy()
+    console.log(testProduct)
+    expect(testProduct.id).toBe(productID)
+
+})
+
+test.only('Get product by Invalid ID', async({request}) => {
+
+    const apiResponse = await request.get('https://api.practicesoftwaretesting.com/products/01KX0SKH0G1Z0XPWHADJV6W9E1')// last number is supposed to be 0
+
+    expect((apiResponse).status()).toBe(404)
+
+    const invalidResponse = await apiResponse.json()
+
+    expect(invalidResponse).toBeTruthy()
+    expect(invalidResponse.message).toContain('Requested item not found')
+})
