@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 
 // expect.soft - if one test fails, it does not stop, it keeps checking until it checks everything
-test.skip('Get all products', async({request}) => {
+test('Get all products', async({request}) => {
     // send a get request
     // check response status
     // validate the response body contains product data
@@ -43,12 +43,12 @@ test('Get product by valid ID', async({request}) => {
     
     const testProduct = await specifiedItemAPI.json()
     expect(testProduct).toBeTruthy()
-    console.log(testProduct)
+    
     expect(testProduct.id).toBe(productID)
 
 })
 
-test.only('Get product by Invalid ID', async({request}) => {
+test('Get product by Invalid ID', async({request}) => {
 
     const apiResponse = await request.get('https://api.practicesoftwaretesting.com/products/01KX0SKH0G1Z0XPWHADJV6W9E1')// last number is supposed to be 0
 
